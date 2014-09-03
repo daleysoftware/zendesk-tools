@@ -9,3 +9,5 @@ Prerequisites
 ---
 * Python 2.7.x
 * wkhtmltopdf
+
+N.B. This project is a work in progress and is currently incomplete.
