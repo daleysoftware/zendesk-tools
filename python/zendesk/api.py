@@ -123,5 +123,11 @@ class Article(AbstractObjectCacher):
             return self.config.get_url('/articles/' + str(self.article_id))
         self._cache(read_json_from_url(get_url())['article'])
 
+    def get_body(self):
+        return self._get()['body']
+
+    def get_name(self):
+        return self._get()['name']
+
     def __str__(self):
-        return 'article: %i (%s)' % (self.article_id, self._get()['name'])
+        return 'article: %i (%s)' % (self.article_id, self.get_name())
