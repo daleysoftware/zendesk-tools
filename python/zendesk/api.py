@@ -12,10 +12,13 @@ class DomainConfiguration:
 
     def __init__(self, sub_domain):
         self.sub_domain = sub_domain
-        self.base_url = 'https://%s.zendesk.com/api/v2/help_center' % sub_domain
+        self.base_url = 'https://%s.zendesk.com' % sub_domain
 
-    def get_url(self, url):
-        return self.base_url + '/' + url
+    def get_home_url(self):
+        return self.base_url
+
+    def get_help_center_url(self, url):
+        return self.base_url + '/api/v2/help_center/' + url
 
 class HelpCenter(AbstractObjectCacher):
     """
@@ -28,7 +31,7 @@ class HelpCenter(AbstractObjectCacher):
 
     def _process(self):
         def get_url():
-            return self.config.get_url('categories.json')
+            return self.config.get_help_center_url('categories.json')
         self._cache(json.loads(urllib2.urlopen(get_url()).read()))
 
     def get_categories(self):
@@ -52,7 +55,7 @@ class Category(AbstractObjectCacher):
 
     def _process(self):
         def get_categories_url():
-            return self.config.get_url('/categories/' + str(self.category_id))
+            return self.config.get_help_center_url('/categories/' + str(self.category_id))
         def get_sections_url():
             return get_categories_url() + '/sections.json'
 
@@ -90,7 +93,7 @@ class Section(AbstractObjectCacher):
 
     def _process(self):
         def get_sections_url():
-            return self.config.get_url('/sections/' + str(self.section_id))
+            return self.config.get_help_center_url('/sections/' + str(self.section_id))
         def get_articles_url():
             return get_sections_url() + '/articles.json'
 
@@ -120,7 +123,7 @@ class Article(AbstractObjectCacher):
 
     def _process(self):
         def get_url():
-            return self.config.get_url('/articles/' + str(self.article_id))
+            return self.config.get_help_center_url('/articles/' + str(self.article_id))
         self._cache(read_json_from_url(get_url())['article'])
 
     def get_body(self):
