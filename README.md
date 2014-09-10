@@ -14,10 +14,14 @@ Prerequisites
 Usage
 ---
 
-To print your Help Center site map:
+To print your site map:
 
     python2.7 tools/print-sitemap.py <zendesk_sub_domain>
 
-To export your articles:
+To export your articles into one large document:
 
     python2.7 tools/print-articles.py <zendesk_sub_domain>
+
+To export individual articles:
+
+    python 2.7 tools/print-article.py <zendesk_sub_domain> <article_id>
