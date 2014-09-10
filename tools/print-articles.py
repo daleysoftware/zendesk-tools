@@ -13,7 +13,6 @@ def format_img_tags(config, body):
         if not match:
             break
         url = match.group(1)
-        # TODO FIXME unsure if this is actually working.
         if 'articles' in url or 'entries' in url:
             article_id = url.split('/')[-1].split('-')[0]
             body = body.replace(url, '#' + article_id)

@@ -16,8 +16,8 @@ Usage
 
 To print your Help Center site map:
 
-    python tools/print-sitemap.py <zendesk_sub_domain>
+    python2.7 tools/print-sitemap.py <zendesk_sub_domain>
 
 To export your articles:
 
-    python tools/print-articles.py <zendesk_sub_domain>
+    python2.7 tools/print-articles.py <zendesk_sub_domain>
