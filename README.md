@@ -27,7 +27,7 @@ To export individual articles:
     python 2.7 tools/print-article.py <zendesk_sub_domain> <article_id>
 
 And perhaps the most useful command for exporting your Zendesk Help Center into
-different knowledge management systems is as follows. This will export each
-article in your system into its own HTML file, named based on the article ID.
+different knowledge management systems is as follows. This command will export
+each article in your system into its own HTML file.
 
     ./tools/export-articles.sh <zendesk_sub_domain>
