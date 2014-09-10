@@ -25,3 +25,8 @@ To export your articles into one large document:
 To export individual articles:
 
     python 2.7 tools/print-article.py <zendesk_sub_domain> <article_id>
+
+And perhaps the most useful command for exporting your Zendesk Help Center into
+different knowledge management systems:
+
+    ./tools/export-articles.sh <zendesk_sub_domain>
