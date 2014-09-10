@@ -126,6 +126,9 @@ class Article(AbstractObjectCacher):
             return self.config.get_help_center_url('/articles/' + str(self.article_id))
         self._cache(read_json_from_url(get_url())['article'])
 
+    def get_id(self):
+        return self.article_id
+
     def get_body(self):
         return self._get()['body']
 

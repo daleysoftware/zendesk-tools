@@ -1,16 +1,23 @@
 Zendesk Exporter
 ===
 
-This tool exports your Zendesk Help Center to a printer-friendly document, useful for distribution to not-so-tech-saavy customers.
+This tool exports your Zendesk Help Center to a distributable HTML format,
+which is useful for not-so-tech-saavy customers. Export is accomplished using
+the [Zendesk Developer API](https://developer.zendesk.com/).
 
 See relevant [feature request](https://support.zendesk.com/entries/84241-Print-PDF-button-in-Forums).
 
 Prerequisites
 ---
 * Python 2.7.x
-* wkhtmltopdf
 
-Todo
+Usage
 ---
 
-N.B. This project is a work in progress and is currently incomplete.
+To print your Help Center site map:
+
+    python tools/print-sitemap.py <zendesk_sub_domain>
+
+To export your articles:
+
+    python tools/print-articles.py <zendesk_sub_domain>
