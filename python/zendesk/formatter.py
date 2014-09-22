@@ -1,18 +1,18 @@
 import re
 
 def format_tags_local(config, body):
-    return _format_img_tags(config, _format_a_tags_local(config, body))
+    return _format_img_tags(config, _format_a_tags_local(body))
 
 def format_tags_remote(config, body):
-    return _format_img_tags(config, _format_a_tags_remote(config, body))
+    return _format_img_tags(config, _format_a_tags_remote(body))
 
-def _format_a_tags_remote(config, body):
-    return _format_a_tags(config, body, False)
+def _format_a_tags_remote(body):
+    return _format_a_tags(body, False)
 
-def _format_a_tags_local(config, body):
-    return _format_a_tags(config, body, True)
+def _format_a_tags_local(body):
+    return _format_a_tags(body, True)
 
-def _format_a_tags(config, body, local):
+def _format_a_tags(body, local):
     """
     Format hyper links; point to local anchors if local else point to zendesk help center.
     """
@@ -27,7 +27,7 @@ def _format_a_tags(config, body, local):
             if local:
                 body = body.replace(url, '#' + article_id)
             else:
-                body = body.replace(url, config.get_home_url() + '/hc/articles/' + article_id)
+                body = body.replace(url, './' + article_id + '.html')
         else:
             # Unhandled link will break our loop; bail.
             raise Exception('Unhandled URL: ' + url)
