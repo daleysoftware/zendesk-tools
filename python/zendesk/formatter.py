@@ -1,18 +1,18 @@
 import re
 
 def format_tags_local(config, body):
-    return format_img_tags(config, format_a_tags_local(config, body))
+    return _format_img_tags(config, _format_a_tags_local(config, body))
 
 def format_tags_remote(config, body):
-    return format_img_tags(config, format_a_tags_remote(config, body))
+    return _format_img_tags(config, _format_a_tags_remote(config, body))
 
-def format_a_tags_remote(config, body):
-    return format_a_tags(config, body, False)
+def _format_a_tags_remote(config, body):
+    return _format_a_tags(config, body, False)
 
-def format_a_tags_local(config, body):
-    return format_a_tags(config, body, True)
+def _format_a_tags_local(config, body):
+    return _format_a_tags(config, body, True)
 
-def format_a_tags(config, body, local):
+def _format_a_tags(config, body, local):
     """
     Format hyper links; point to local anchors if local else point to zendesk help center.
     """
@@ -34,7 +34,7 @@ def format_a_tags(config, body, local):
 
     return body
 
-def format_img_tags(config, body):
+def _format_img_tags(config, body):
     """
     Format img tags; point to the zendesk help center and not just '/'; set width to some
     percentage of the page.
