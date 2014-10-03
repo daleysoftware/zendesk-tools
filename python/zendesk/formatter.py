@@ -39,4 +39,5 @@ def _format_img_tags(config, body):
     Format img tags; point to the zendesk help center and not just '/'; set width to some
     percentage of the page.
     """
-    return body.replace('src="/', 'width="50%" src="' + config.get_home_url() + '/')
+    body = body.replace('src=', 'style="max-width:50%" src=')
+    return body.replace('src="/', 'src="' + config.get_home_url() + '/')
