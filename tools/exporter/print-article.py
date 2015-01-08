@@ -1,7 +1,6 @@
 import sys
 import os
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../python'))
 from zendesk.api import DomainConfiguration
 from zendesk.api import Article
 from zendesk.formatter import format_tags_remote

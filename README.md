@@ -1,12 +1,20 @@
-Zendesk Tools
-===
-
+# Zendesk Tools
 
 The `zendesk-tools` project contains a wrapper for the Zendesk API, and a
 number of convenient tools that can be used with Zendesk.
 
-Exporter
----
+## Prerequistes and Setup
+
+You must have `python2.7` and `virtualenv` installed. To your system so that it
+can run this software, run the following:
+
+```
+./setup.sh
+```
+
+## Tools
+
+### Exporter
 
 This tool exports your Zendesk Help Center to a distributable HTML format,
 which is useful for not-so-tech-saavy customers. Export is accomplished using
@@ -40,7 +48,6 @@ each article in your system into its own HTML file.
 ./tools/exporter/export-articles.sh <zendesk_sub_domain>
 ```
 
-Suspended User Deleter
----
+### Suspended User Deleter
 
 *Work in progress.*

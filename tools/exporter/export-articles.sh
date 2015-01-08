@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 cd $(dirname $0)
-PYTHON=python2.7
+PYTHON=$(dirname $0)/../../env/bin/python
 
 if [ $# -ne 1 ]
 then
