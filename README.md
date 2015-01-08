@@ -25,19 +25,19 @@ See relevant [feature request](https://support.zendesk.com/entries/84241-Print-P
 To print your site map:
 
 ```
-python2.7 tools/exporter/print-sitemap.py <zendesk_sub_domain>
+./env/bin/python tools/exporter/print-sitemap.py <zendesk_sub_domain>
 ```
 
 To export your articles into one large document:
 
 ```
-python2.7 tools/exporter/print-articles.py <zendesk_sub_domain>
+./env/bin/python tools/exporter/print-articles.py <zendesk_sub_domain>
 ```
 
 To export individual articles:
 
 ```
-python 2.7 tools/exporter/print-article.py <zendesk_sub_domain> <article_id>
+./env/bin/python tools/exporter/print-article.py <zendesk_sub_domain> <article_id>
 ```
 
 And perhaps the most useful command for exporting your Zendesk Help Center into
