@@ -1,7 +1,7 @@
 # Zendesk Tools
 
-The `zendesk-tools` project contains a wrapper for the Zendesk API, and a
-number of convenient tools that can be used with Zendesk.
+The `zendesk-tools` project contains a python wrapper for the Zendesk API, and
+a number of convenient tools that can be used with Zendesk.
 
 ## Prerequistes and Setup
 
