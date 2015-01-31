@@ -33,5 +33,8 @@ See relevant [feature request](https://support.zendesk.com/entries/84241-Print-P
 This tool deletes all suspended users in your Zendesk system.
 
 ```
-./tools/suspended-user-deleter/delete-suspended-users.sh <zendesk_sub_domain> <admin_email> <admin_token>
+./tools/suspended-user-deleter/delete-suspended-users.sh \
+    <zendesk_sub_domain> \
+    <admin_email> \
+    <admin_token>
 ```
