@@ -1,14 +1,18 @@
+"""
+Python script to print a single zendesk article.
+"""
+
 import sys
-import os
 
 from zendesk.api import DomainConfiguration
-from zendesk.api import Article
+from zendesk.api import HelpCenter
 from zendesk.formatter import format_tags_remote
 
-def main(sub_domain, article_id):
+def main(sub_domain, aid):
     config = DomainConfiguration(sub_domain)
+    hc = HelpCenter(config)
+    article = HelpCenter.Article(hc, aid)
 
-    article = Article(config, article_id)
     print('<h2>%s</h2>' % article.get_name())
     print (format_tags_remote(config, article.get_body()))
 

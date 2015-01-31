@@ -1,5 +1,11 @@
+"""
+Python script to print all zendesk domain articles as a single entity. Useful for checking global
+formatting properties or your articles.
+
+N.B. this python app currently does not have a wrapper script.
+"""
+
 import sys
-import os
 
 from zendesk.api import DomainConfiguration
 from zendesk.api import HelpCenter
@@ -7,8 +13,9 @@ from zendesk.formatter import format_tags_local
 
 def main(sub_domain):
     config = DomainConfiguration(sub_domain)
+    hc = HelpCenter(config)
 
-    for category in HelpCenter(config).get_categories():
+    for category in hc.get_categories():
         for section in category.get_sections():
             for article in section.get_articles():
                 # XXX This could probably be improved to be prettier.

@@ -1,9 +1,9 @@
-import json
-import urllib2
+from requests.auth import HTTPBasicAuth
 
 from zendesk.cache import AbstractObjectCacher
 from zendesk.web import read_json_from_url
 from zendesk.encoding import merge_json_objects
+
 
 class DomainConfiguration:
     """
@@ -17,22 +17,152 @@ class DomainConfiguration:
     def get_home_url(self):
         return self.base_url
 
-    def get_help_center_url(self, url):
-        return self.base_url + '/api/v2/help_center/' + url
+    def get_hc_url(self, url):
+        return self.base_url + '/api/v2/help_center' + url
+
+
+class HelpCenterCredentials:
+    """
+    Represents token or username/password credentials for your Zendesk help center.
+    """
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+    def get_basic_auth_object(self):
+        return HTTPBasicAuth(username=self.username, password=self.password)
+
 
 class HelpCenter(AbstractObjectCacher):
     """
     Represents a Zendesk Help Center.
     """
 
-    def __init__(self, config):
+
+    class Category(AbstractObjectCacher):
+        """
+        Represents a Zendesk Help Center Category.
+        """
+
+        def __init__(self, hc, cit):
+            AbstractObjectCacher.__init__(self)
+            self.hc = hc
+            self.cit = cit
+
+        def _process(self):
+            def get_categories_url():
+                return self.hc.domain_config.get_hc_url('/categories/' + str(self.cit))
+            def get_sections_url():
+                return get_categories_url() + '/sections.json'
+
+            info = self.hc.read_json_from_url(get_categories_url())['category']
+            sections = self.hc.read_json_from_url(get_sections_url())['sections']
+            self._cache(merge_json_objects('info', info, 'sections', sections))
+
+        def get_sections(self):
+            """
+            Get the section objects belonging to this help center.
+            """
+            sections = []
+            for section in self._get()['sections']:
+                sections.append(HelpCenter.Section(self.hc, section['id']))
+            return sections
+
+        def __str__(self):
+            return 'category: %i (%s)' % (self.cit, self._get()['info']['name'])
+
+
+    class Section(AbstractObjectCacher):
+        """
+        Represents a Zendesk Help Center Section.
+        """
+
+        def __init__(self, hc, sid):
+            AbstractObjectCacher.__init__(self)
+            self.hc = hc
+            self.sid = sid
+
+        def _process(self):
+            def get_sections_url():
+                return self.hc.domain_config.get_hc_url('/sections/' + str(self.sid))
+            def get_articles_url():
+                return get_sections_url() + '/articles.json'
+
+            info = self.hc.read_json_from_url(get_sections_url())['section']
+            articles = self.hc.read_json_from_url(get_articles_url())['articles']
+            self._cache(merge_json_objects('info', info, 'articles', articles))
+
+        def get_articles(self):
+            articles = []
+            for article in self._get()['articles']:
+                articles.append(HelpCenter.Article(self.hc, article['id']))
+            return articles
+
+        def __str__(self):
+            return 'section: %i (%s)' % (self.sid, self._get()['info']['name'])
+
+
+    class Article(AbstractObjectCacher):
+        """
+        Represents a Zendesk Help Center Article.
+        """
+
+        def __init__(self, hc, aid):
+            AbstractObjectCacher.__init__(self)
+            self.hc = hc
+            self.aid = aid
+
+        def _process(self):
+            def get_url():
+                return self.hc.domain_config.get_hc_url('/articles/' + str(self.aid))
+            self._cache(self.hc.read_json_from_url(get_url())['article'])
+
+        def get_id(self):
+            return self.aid
+
+        def get_body(self):
+            return self._get()['body']
+
+        def get_name(self):
+            return self._get()['name']
+
+        def __str__(self):
+            return 'article: %i (%s)' % (self.aid, self.get_name())
+
+
+    class SuspendedUsers:
+        """
+        Respresents the suspended users within your Zendesk Help Center.
+        """
+
+        def __init__(self, hc):
+            self.hc = hc
+
+        def get_suspended_users(self):
+            def get_url():
+                return self.hc.domain_config.get_hc_url('/users')
+
+            print get_url()
+            # TODO finish this... Currently returing an invalid enpoint error.
+            print self.hc.read_json_from_url(get_url())
+
+
+    def __init__(self, domain_config, credentials=None):
         AbstractObjectCacher.__init__(self)
-        self.config = config
+        self.domain_config = domain_config
+
+        self.auth = credentials
+        if credentials is not None:
+            self.auth = credentials.get_basic_auth_object()
 
     def _process(self):
         def get_url():
-            return self.config.get_help_center_url('categories.json')
-        self._cache(json.loads(urllib2.urlopen(get_url()).read()))
+            return self.domain_config.get_hc_url('/categories.json')
+        self._cache(read_json_from_url(get_url(), auth=self.auth))
+
+    def read_json_from_url(self, url):
+        return read_json_from_url(url, auth=self.auth)
 
     def get_categories(self):
         """
@@ -40,100 +170,12 @@ class HelpCenter(AbstractObjectCacher):
         """
         categories = []
         for category in self._get()['categories']:
-            categories.append(Category(self.config, category['id']))
+            categories.append(HelpCenter.Category(self, category['id']))
         return categories
 
-class Category(AbstractObjectCacher):
-    """
-    Represents a Zendesk Help Center Category.
-    """
+    def delete_suspended_users(self):
+        suspended_users = HelpCenter.SuspendedUsers(self)
+        suspended_users.get_suspended_users()
 
-    def __init__(self, config, category_id):
-        AbstractObjectCacher.__init__(self)
-        self.config = config
-        self.category_id = category_id
+        # TODO finish this... Delete the users.
 
-    def _process(self):
-        def get_categories_url():
-            return self.config.get_help_center_url('/categories/' + str(self.category_id))
-        def get_sections_url():
-            return get_categories_url() + '/sections.json'
-
-        info = read_json_from_url(get_categories_url())['category']
-        sections = read_json_from_url(get_sections_url())['sections']
-        self._cache(merge_json_objects('info', info, 'sections', sections))
-
-    def get_sections(self):
-        """
-        Get the section objects belonging to this help center.
-        """
-        sections = []
-        for section in self._get()['sections']:
-            # XXX The Zendesk API is not cleanly RESTful here.
-            #
-            # The API gives ALL section object detail when querying /sections, which isn't ideal.
-            # We could avoid querying the section detail on creation of this object. For the
-            # purposes of this project though, we repeat the query to opt for a cleaner
-            # implementation.
-            sections.append(Section(self.config, section['id']))
-        return sections
-
-    def __str__(self):
-        return 'category: %i (%s)' % (self.category_id, self._get()['info']['name'])
-
-class Section(AbstractObjectCacher):
-    """
-    Represents a Zendesk Help Center Section.
-    """
-
-    def __init__(self, config, section_id):
-        AbstractObjectCacher.__init__(self)
-        self.config = config
-        self.section_id = section_id
-
-    def _process(self):
-        def get_sections_url():
-            return self.config.get_help_center_url('/sections/' + str(self.section_id))
-        def get_articles_url():
-            return get_sections_url() + '/articles.json'
-
-        info = read_json_from_url(get_sections_url())['section']
-        articles = read_json_from_url(get_articles_url())['articles']
-        self._cache(merge_json_objects('info', info, 'articles', articles))
-
-    def get_articles(self):
-        articles = []
-        for article in self._get()['articles']:
-            # XXX As with get_sections(), we could avoid the duplicate query here.
-            articles.append(Article(self.config, article['id']))
-        return articles
-
-    def __str__(self):
-        return 'section: %i (%s)' % (self.section_id, self._get()['info']['name'])
-
-class Article(AbstractObjectCacher):
-    """
-    Represents a Zendesk Help Center Article.
-    """
-
-    def __init__(self, config, article_id):
-        AbstractObjectCacher.__init__(self)
-        self.config = config
-        self.article_id = article_id
-
-    def _process(self):
-        def get_url():
-            return self.config.get_help_center_url('/articles/' + str(self.article_id))
-        self._cache(read_json_from_url(get_url())['article'])
-
-    def get_id(self):
-        return self.article_id
-
-    def get_body(self):
-        return self._get()['body']
-
-    def get_name(self):
-        return self._get()['name']
-
-    def __str__(self):
-        return 'article: %i (%s)' % (self.article_id, self.get_name())

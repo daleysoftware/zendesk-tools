@@ -1,10 +1,7 @@
 import json
-import urllib2
+import requests
 
-def read_json_from_url(url):
-    req = urllib2.Request(url, None, {'Content-Type': 'application/json'})
-    f = urllib2.urlopen(req)
-    response = f.read()
-    f.close()
-    return json.loads(response)
-
+def read_json_from_url(url, auth=None):
+    headers = {'content-type': 'application/json'}
+    response = requests.get(url, headers=headers, auth=auth)
+    return json.loads(response.text)

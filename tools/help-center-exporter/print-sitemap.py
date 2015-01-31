@@ -1,13 +1,17 @@
+"""
+Python script to print the sitemap of a zendesk help center.
+"""
+
 import sys
-import os
 
 from zendesk.api import DomainConfiguration
 from zendesk.api import HelpCenter
 
 def main(sub_domain):
     config = DomainConfiguration(sub_domain)
+    hc = HelpCenter(config)
 
-    for category in HelpCenter(config).get_categories():
+    for category in hc.get_categories():
         print category
         for section in category.get_sections():
             print '\t%s' % section
