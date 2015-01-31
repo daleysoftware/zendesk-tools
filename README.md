@@ -28,8 +28,6 @@ See relevant [feature request](https://support.zendesk.com/entries/84241-Print-P
 
 ### Suspended User Deleter
 
-*Work in progress.*
-
 This tool deletes all suspended users in your Zendesk system.
 
 ```

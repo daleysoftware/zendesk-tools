@@ -2,7 +2,14 @@ from requests.auth import HTTPBasicAuth
 
 from zendesk.cache import AbstractObjectCacher
 from zendesk.web import read_json_from_url
+from zendesk.web import do_delete
 from zendesk.encoding import merge_json_objects
+
+
+LOGGING_ENABLED = True
+
+def log(message):
+    if LOGGING_ENABLED: print(message)
 
 
 class DomainConfiguration:
@@ -21,6 +28,9 @@ class DomainConfiguration:
         return self.base_url + '/api/v2/help_center' + url
 
 
+    def get_api_url(self, url):
+        return self.base_url + '/api/v2' + url
+
 class HelpCenterCredentials:
     """
     Represents token or username/password credentials for your Zendesk help center.
@@ -31,7 +41,7 @@ class HelpCenterCredentials:
         self.password = password
 
     def get_basic_auth_object(self):
-        return HTTPBasicAuth(username=self.username, password=self.password)
+        return HTTPBasicAuth(username=self.username + '/token', password=self.password)
 
 
 class HelpCenter(AbstractObjectCacher):
@@ -131,21 +141,22 @@ class HelpCenter(AbstractObjectCacher):
             return 'article: %i (%s)' % (self.aid, self.get_name())
 
 
-    class SuspendedUsers:
+    class User:
         """
-        Respresents the suspended users within your Zendesk Help Center.
+        Respresents a Zendesk Help Center user.
         """
 
-        def __init__(self, hc):
+        def __init__(self, hc, uid):
             self.hc = hc
+            self.uid = uid
 
-        def get_suspended_users(self):
+        def delete(self):
             def get_url():
-                return self.hc.domain_config.get_hc_url('/users')
+                return self.hc.domain_config.get_api_url('/users/%i.json' % self.uid)
+            do_delete(get_url(), self.hc.auth)
 
-            print get_url()
-            # TODO finish this... Currently returing an invalid enpoint error.
-            print self.hc.read_json_from_url(get_url())
+        def __str__(self):
+            return 'user %i' % self.uid
 
 
     def __init__(self, domain_config, credentials=None):
@@ -173,9 +184,30 @@ class HelpCenter(AbstractObjectCacher):
             categories.append(HelpCenter.Category(self, category['id']))
         return categories
 
-    def delete_suspended_users(self):
-        suspended_users = HelpCenter.SuspendedUsers(self)
-        suspended_users.get_suspended_users()
 
-        # TODO finish this... Delete the users.
+    def get_suspended_users(self, max_users=0):
+        def get_url():
+            return self.domain_config.get_api_url('/users.json')
+        def append_to_result():
+            for user in json['users']:
+                if user['suspended']:
+                    result.append(HelpCenter.User(self, user['id']))
+        log("Getting users list...")
+        counter = 0
+        result = []
+        url = get_url()
+        while True:
+            log("(%i) GET %s" % (len(result), url))
+            counter += 1
+            json = self.read_json_from_url(url)
+            append_to_result()
+            if 'next_page' not in json: break
+            if max_users != 0 and len(result) >= max_users: break
+            url = json['next_page']
+        return result
+
+    def delete_suspended_users(self):
+        for user in self.get_suspended_users():
+            log("Delete %s" % user)
+            user.delete()
 

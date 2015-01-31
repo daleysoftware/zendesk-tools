@@ -12,8 +12,7 @@ def main(sub_domain, admin_email, admin_token):
     config = DomainConfiguration(sub_domain)
     credentials = HelpCenterCredentials(admin_email, admin_token)
     hc = HelpCenter(config, credentials)
-
-    print hc.delete_suspended_users()
+    hc.delete_suspended_users()
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
