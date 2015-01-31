@@ -201,7 +201,7 @@ class HelpCenter(AbstractObjectCacher):
             counter += 1
             json = self.read_json_from_url(url)
             append_to_result()
-            if 'next_page' not in json: break
+            if 'next_page' not in json or json['next_page'] is None: break
             if max_users != 0 and len(result) >= max_users: break
             url = json['next_page']
         return result
