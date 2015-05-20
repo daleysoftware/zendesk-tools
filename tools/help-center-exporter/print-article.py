@@ -14,10 +14,10 @@ def main(sub_domain, aid):
     article = HelpCenter.Article(hc, aid)
 
     print('<h2>%s</h2>' % article.get_name())
-    print (format_tags_remote(config, article.get_body()))
+    print(format_tags_remote(config, article.get_body()))
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print 'Usage: python %s <zendesk_sub_domain> <article_id>' % sys.argv[0]
+        print('Usage: python %s <zendesk_sub_domain> <article_id>' % sys.argv[0])
     else:
         main(sys.argv[1], sys.argv[2])

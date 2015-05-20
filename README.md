@@ -5,7 +5,7 @@ a number of convenient scripts that can be used with Zendesk.
 
 ## Prerequistes and Setup
 
-You must have `python2.7` and `virtualenv` installed. To setup your system so
+You must have `python3` and `virtualenv` installed. To setup your system so
 that it can run this software, execute the following:
 
 ```

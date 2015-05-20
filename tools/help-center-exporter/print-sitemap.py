@@ -12,15 +12,15 @@ def main(sub_domain):
     hc = HelpCenter(config)
 
     for category in hc.get_categories():
-        print category
+        print(category)
         for section in category.get_sections():
-            print '\t%s' % section
+            print('\t%s' % section)
             for article in section.get_articles():
-                print '\t\t%s' % article
+                print('\t\t%s' % article)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print 'Usage: python %s <zendesk_sub_domain>' % sys.argv[0]
+        print('Usage: python %s <zendesk_sub_domain>' % sys.argv[0])
     else:
         main(sys.argv[1])
 
