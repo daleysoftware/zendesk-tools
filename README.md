@@ -1,7 +1,9 @@
-**Disclaimer: Please consider using
-[Eventbrite's Zendesk python API](https://github.com/eventbrite/zendesk).
-While the tools in this repository work, their API is more full-featured and
-might serve you better.**
+*See also
+[Eventbrite's Zendesk Python API](https://github.com/eventbrite/zendesk).
+While the tools in this repository work, Eventbrite's API is more full-featured
+and might serve you better.*
+
+<hr/>
 
 # Zendesk Tools
 

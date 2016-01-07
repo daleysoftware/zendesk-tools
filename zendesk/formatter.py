@@ -17,7 +17,7 @@ def _format_a_tags(body, local):
     Format hyper links; point to local anchors if local else point to zendesk help center.
     """
     while True:
-        match = re.search('href="(/[0-9,a-z,A-Z,/,-]*)"', body)
+        match = re.search('href="(/[0-9,a-z,A-Z,/,-,\.]*)"', body)
         if not match:
             break
         url = match.group(1)
