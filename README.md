@@ -1,14 +1,14 @@
-*See also
-[Eventbrite's Zendesk Python API](https://github.com/eventbrite/zendesk).
-While the tools in this repository work, Eventbrite's API is more full-featured
-and might serve you better.*
-
-<hr/>
-
 # Zendesk Tools
 
 The `zendesk-tools` project contains a python wrapper for the Zendesk API, and
 a number of convenient scripts that can be used with Zendesk.
+
+## See Also
+
+[Eventbrite's Zendesk Python API](https://github.com/eventbrite/zendesk).
+
+While the tools in this repository work, Eventbrite's API is more full-featured
+and might serve you better.
 
 ## Prerequistes and Setup
 
